@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import {
   AppWrapper,
   CenteringWrapper,
@@ -10,19 +9,45 @@ import {
   Emoji,
 } from '../styles/Styled';
 
-//Custom hook that gets API data.
-function useMovies() {
-  const [data, setData] = useState({});
-  useEffect(() => {
-    console.log('Sup');
-    setData({ movies: [] });
-  }, []);
+import axios from '../api/movie';
 
+//Custom hook that gets API data.
+function useDiscover() {
+  const [data, setData] = useState(undefined);
+  async function fetchData() {
+    try {
+      const res = await axios.get(`/discover/movie`);
+      setData({ movies: res.data.results });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
   return data;
 }
 
 export default function ListView() {
-  const data = useMovies();
+  const data = useDiscover();
+
+  function renderList() {
+    if (typeof data === 'undefined') {
+      // console.log(data);
+      return <div>Loading...</div>;
+    }
+    console.log(data.movies);
+    return data.movies.map(movie => (
+      <Card key={movie.id}>
+        <Emoji>{movie.vote_average < 7.0 ? '🤢' : '🔥'}</Emoji>
+        <div>
+          <CardTitle to="/klk">{movie.title}</CardTitle>
+          <CardText>Rating: {movie.vote_average}</CardText>
+        </div>
+      </Card>
+    ));
+  }
+
   return (
     <AppWrapper>
       <CenteringWrapper>
@@ -32,50 +57,7 @@ export default function ListView() {
             🍿
           </span>
         </AppTitle>
-        <Card>
-          <Emoji>
-            <span role="img" aria-label="rocket emoji">
-              🚀
-            </span>
-          </Emoji>
-          <div>
-            <CardTitle>The Heart Collector</CardTitle>
-            <CardText>Nevermore!</CardText>
-          </div>
-        </Card>
-        <Card>
-          <Emoji>
-            <span role="img" aria-label="rocket emoji">
-              🚀
-            </span>
-          </Emoji>
-          <div>
-            <CardTitle>The Heart Collector</CardTitle>
-            <CardText>Nevermore!</CardText>
-          </div>
-        </Card>
-        <Card>
-          <Emoji>
-            <span role="img" aria-label="rocket emoji">
-              🚀
-            </span>
-          </Emoji>
-          <div>
-            <CardTitle>The Heart Collector</CardTitle>
-            <CardText>Nevermore!</CardText>
-          </div>
-        </Card>
-        <Card>
-          <Emoji>
-            <span role="img" aria-label="rocket emoji">
-              🚀
-            </span>
-          </Emoji>
-          <div>
-            <CardTitle>The Heart Collector</CardTitle>
-            <CardText>Nevermore!</CardText>
-          </div>
-        </Card>
+        {renderList()}
       </CenteringWrapper>
     </AppWrapper>
   );
