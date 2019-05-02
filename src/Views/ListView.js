@@ -41,7 +41,7 @@ export default function ListView() {
       <Card key={movie.id}>
         <Emoji>{movie.vote_average < 7.0 ? '🤢' : '🔥'}</Emoji>
         <div>
-          <CardTitle to="/klk">{movie.title}</CardTitle>
+          <CardTitle to={`/movie/${movie.id}`}>{movie.title}</CardTitle>
           <CardText>Rating: {movie.vote_average}</CardText>
         </div>
       </Card>
