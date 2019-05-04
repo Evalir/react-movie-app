@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/movie';
-import { BASE_URL } from '../api/movie';
+import { IMG_BASE_URL, POSTER_SIZES } from '../api/utils';
+
+import {
+  AppWrapper,
+  CenteringWrapper,
+  MovieGrid,
+  MoviePoster,
+  MovieTitle,
+  MovieDetails,
+} from '../styles/Styled';
 
 function useMovieFetch(id) {
   const [data, setData] = useState(undefined);
@@ -20,12 +29,25 @@ function useMovieFetch(id) {
 
 export default function App(props) {
   const data = useMovieFetch(props.match.params.id);
-  console.log(data);
   if (typeof data === 'undefined') {
     return null;
   }
-  const moviePosterURL = BASE_URL + `/movie/${props.match.params.id}`;
-  console.log('url: ', moviePosterURL);
+  const { movies } = data;
+  console.log(movies);
+  const moviePosterURL =
+    IMG_BASE_URL + POSTER_SIZES.small + `${movies.poster_path}`;
 
-  return <div>Movie id: {props.match.params.id}</div>;
+  return (
+    <AppWrapper>
+      <CenteringWrapper>
+        <MovieGrid>
+          <MoviePoster src={moviePosterURL} alt="klk" />
+          <div>
+            <MovieTitle>{movies.original_title}</MovieTitle>
+            <MovieDetails>{movies.overview}</MovieDetails>
+          </div>
+        </MovieGrid>
+      </CenteringWrapper>
+    </AppWrapper>
+  );
 }
