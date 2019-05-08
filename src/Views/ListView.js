@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  AppWrapper,
-  CenteringWrapper,
-  AppTitle,
-  Card,
-  CardTitle,
-  CardText,
-  Emoji,
-} from '../styles/Styled';
-
 import axios from '../api/movie';
+
+import { AppWrapper, CenteringWrapper, AppTitle } from '../styles/Styled';
+import Card from '../components/Card';
 
 //Custom hook that gets API data.
 function useDiscover() {
@@ -33,19 +26,10 @@ export default function ListView() {
 
   function renderList() {
     if (typeof data === 'undefined') {
-      // console.log(data);
       return <div>Loading...</div>;
     }
     console.log(data.movies);
-    return data.movies.map(movie => (
-      <Card key={movie.id}>
-        <Emoji>{movie.vote_average < 7.0 ? '🤢' : '🔥'}</Emoji>
-        <div>
-          <CardTitle to={`/movie/${movie.id}`}>{movie.title}</CardTitle>
-          <CardText>Rating: {movie.vote_average}</CardText>
-        </div>
-      </Card>
-    ));
+    return data.movies.map(movie => <Card movie={movie} />);
   }
 
   return (
